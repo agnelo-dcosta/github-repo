@@ -10,6 +10,7 @@ public class HelloWorld {
 		// TODO Auto-generated method stub
 		System.out.println("Hello world...github");
 
+		System.out.println("testing commit and push ");
 	}
 
 }

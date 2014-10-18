@@ -3,7 +3,6 @@ package org.aggi.sqldata.impl;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -22,8 +21,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 public class DataExportImpl implements DataExport {
-	
-	private static final String CONFIG_FILE ="config.properties";
 	private static final String OUTPUT_PATH = "outputpath";
 	private static final String OUTPUT_FILENAME_EXT = ".xls";
 	
@@ -31,6 +28,14 @@ public class DataExportImpl implements DataExport {
 	 * @see org.aggi.sqldata.DataExport#export(java.lang.String, java.util.Map)
 	 */
 	public void export(String fileName, Map<String,ResultSet> resultSets) throws ServiceException {
+		if(null==fileName) {
+			throw new IllegalArgumentException("Can NOT export to a file as the filename was NULL");
+		}
+		
+		if(null==resultSets || resultSets.size() <= 0) {
+			throw new IllegalArgumentException("Can NOT export to a file as there must be at least one result set");
+		}
+		
 		Workbook wb = new HSSFWorkbook();
 		int cellNo = 0;
 	 
@@ -60,6 +65,9 @@ public class DataExportImpl implements DataExport {
 						
 						Cell dataCell = dataRow.createCell(cellNo++);
 						switch(rsmd.getColumnType(i)) {
+							case Types.NUMERIC:
+								dataCell.setCellValue(null!=rs.getBigDecimal(columnName)?rs.getBigDecimal(columnName).toString():null);
+								break;
 							case Types.INTEGER:
 								dataCell.setCellValue(rs.getInt(columnName));
 								break;
@@ -77,10 +85,10 @@ public class DataExportImpl implements DataExport {
 			}
 		}
 	
-		Properties prop = readPropValues();
+		Properties prop = PropertyConfigReader.read();
 		String outputpath = prop.getProperty(OUTPUT_PATH);
 		String outputDirPath = outputpath + fileName + OUTPUT_FILENAME_EXT;
-		FileOutputStream fileOut;
+		FileOutputStream fileOut = null;
 		try {
 			fileOut = new FileOutputStream(outputDirPath);
 			wb.write(fileOut);
@@ -111,24 +119,5 @@ public class DataExportImpl implements DataExport {
 			}			
 		}
 			return columns;
-	}	
-
-	private Properties readPropValues() throws ServiceException {
-		
-		Properties prop = new Properties();
-		InputStream inputStream = getClass().getClassLoader().getResourceAsStream(CONFIG_FILE);
-		try {
-			if (null==inputStream) {
-				throw new FileNotFoundException("property file '" + CONFIG_FILE + "' not found in the classpath");
-			}
-			
-			prop.load(inputStream);
-		} catch (FileNotFoundException ex) {
-			throw new ServiceException(ex);
-		} catch (IOException ex) {
-			throw new ServiceException(ex);
-		}
-		
-		return prop;
 	}
 }

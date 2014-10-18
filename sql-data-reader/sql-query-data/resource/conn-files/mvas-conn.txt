@@ -1,0 +1,8 @@
+--Name
+MVAS
+--Username
+AGGI2
+--Password
+AGGI2_123
+--ConnectionString
+jdbc:oracle:thin:@EISORA001:1522:tiaa001

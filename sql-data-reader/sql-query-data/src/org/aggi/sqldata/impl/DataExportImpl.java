@@ -21,7 +21,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 public class DataExportImpl implements DataExport {
-	private static final String OUTPUT_PATH = "outputpath";
 	private static final String OUTPUT_FILENAME_EXT = ".xls";
 	
 	/* (non-Javadoc)
@@ -86,7 +85,7 @@ public class DataExportImpl implements DataExport {
 		}
 	
 		Properties prop = PropertyConfigReader.read();
-		String outputpath = prop.getProperty(OUTPUT_PATH);
+		String outputpath = prop.getProperty(PropertyConfigReader.OUTPUT_PATH);
 		String outputDirPath = outputpath + fileName + OUTPUT_FILENAME_EXT;
 		FileOutputStream fileOut = null;
 		try {

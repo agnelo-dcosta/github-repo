@@ -68,7 +68,7 @@ public class DatabaseReader {
 		if(databaseName.equals(Constants.TPA_Conn_Const))
 		{
 			//get stac specific
-			variables.put("<SSN>", ssn.substring(0, 2) + "-" + ssn.substring(3, 4) + "-" + ssn.subSequence(5, 8) );
+			variables.put("<SSN>", ssn.substring(0, 3) + "-" + ssn.substring(3, 5) + "-" + ssn.subSequence(5, 9) );
 		
 			//get client
 			

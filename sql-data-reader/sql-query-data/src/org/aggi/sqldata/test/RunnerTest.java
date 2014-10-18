@@ -22,11 +22,11 @@ public class RunnerTest {
 	Connection conn = null;
 	@Before
 	public void setUp(){
-		 conn = new DatabaseConn().getConnection("jdbc:oracle:thin:@EISORA001:1522:tiaa001", "AGGI2", "AGGI2_123");
+		 conn = new DatabaseConn().getConnection("jdbc:oracle:thin:@EISORA001:1522:tiaa001", "AGGI2_TPA", "AGGI2_TPA_123");
 	}
 	@Test
 	public void testEndTOEnd(){
-		SQLFileParser sfp = new SQLFileParser("/mvas.sql");
+		SQLFileParser sfp = new SQLFileParser("/stac.sql");
 		
 		DatabaseReader dr =  new DatabaseReader();
 		List<SqlQueryObject> queryList = null;

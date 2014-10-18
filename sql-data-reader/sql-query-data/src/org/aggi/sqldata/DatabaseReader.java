@@ -1,7 +1,9 @@
 package org.aggi.sqldata;
 
 import java.sql.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseReader {
 
@@ -9,25 +11,83 @@ public class DatabaseReader {
 	List <SqlQueryObject> queryList;
 	String database;
 	Map <String,String> variables;
+	Connection conn;
+	String ssn;
 	
-	public ResultSet readSql(Connection conn, String query) throws SQLException
+	public void readSql( List <ResultSet> rsOutput ) throws SQLException
 	{
 		Statement st;
 		ResultSet rs;
 		st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_READ_ONLY);
 		
-		rs = st.executeQuery(query);
-		
-		return rs;
+		for(SqlQueryObject queryObject: queryList)
+		{
+			rs = st.executeQuery(queryObject.getQuery());
+			rsOutput.add(rs);
+		}
+	
 	}
 	
-	public void setUpReader(String fileName, String databaseName, List <SqlQueryObject> queryList)
+	public void setUpReader(String databaseName, Connection conn, String ssn, List <SqlQueryObject> queryList)
 	{
+		this.conn = conn;
+		this.queryList = queryList;
+		variables = new HashMap<String,String>();
 		
+		setupVariables(databaseName, conn, ssn);
+		
+		replaceVariables();
 	}
 	
 	public void replaceVariables()
 	{
+		for (SqlQueryObject replaceQuery : queryList)
+		{
+			for (String variableName : variables.keySet() )
+			{
+				replaceQuery.setQuery(replaceQuery.getQuery().replaceAll( variableName , variables.get(variableName)));
+			}
+		}
+	}
+	
+	public void setupVariables(String databaseName, Connection conn, String ssn)
+	{
+		if(databaseName.equals("mvas"))
+		{
+			// get mvas specific info
+			variables.put("<SSN>", ssn);
+			
+			//get client
+			
+			//get employer
+			
+			//get location
+			
+		}
 		
+		if(databaseName.equals("tpa"))
+		{
+			//get stac specific
+			variables.put("<SSN>", ssn.substring(0, 2) + "-" + ssn.substring(3, 4) + "-" + ssn.subSequence(5, 8) );
+		
+			//get client
+			
+			
+			//get employer
+			
+			
+			//get location
+			
+		}
+		
+		if(databaseName.equals("es"))
+		{
+			//get stac event system info
+			variables.put("<SSN>", ssn.substring(0, 2) + "-" + ssn.substring(3, 4) + "-" + ssn.subSequence(5, 8) );
+		
+			//get latest payroll id
+			
+			//get file UUID
+		}
 	}
 }

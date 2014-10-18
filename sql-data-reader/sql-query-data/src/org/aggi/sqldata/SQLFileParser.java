@@ -11,9 +11,10 @@ import java.util.Map;
 public class SQLFileParser {
 
 	private static String filePath;
-	Map<String,SqlQueryObject> sqlQueryMap;
+	private static String connName;
+	private List<SqlQueryObject> sqlQuery;
 	SqlQueryObject newQuery;
-	String query = "";
+	
 	public SQLFileParser(String sqlFilePath)
 	{
 		String currentDirectory = System.getProperty("user.dir");
@@ -22,42 +23,72 @@ public class SQLFileParser {
 		
 	}
 	
-	public void createListOfQueries(){
-		sqlQueryMap = new HashMap<String,SqlQueryObject >();
+	public List<SqlQueryObject> createListOfQueries() throws Exception{
+		sqlQuery = new ArrayList<SqlQueryObject >();
 		try 
 		{
 			FileReader fr = new FileReader(filePath);
 			BufferedReader reader = new BufferedReader(fr) ;
 		    String line = null;
+		    String query = "";
 		    while ((line = reader.readLine()) != null) 
 		    {
 		       // System.out.println(line);
-		        if(line.contains("--"))
+		    	if(line.contains("--Connection ")){
+		    		String patern = "--Connection ";
+		    		
+		    		 connName = getConnectionName(line);
+		    		 System.out.println("\nConnName : " + connName);
+		    		 if(connName == null){
+		    			 throw new Exception("No Valid connection in the file");
+		    		 }
+		    	}
+		    	else if(line.contains("--"))
 		        {
-		        	String key = line;
+		        	String name = line;
 		        	newQuery = new SqlQueryObject();
-		        	newQuery.setQuery(query);
-		        	sqlQueryMap.put(key,newQuery);
+		        	newQuery.setName(name);
+		        	query = "";
+		        	sqlQuery.add(newQuery);
 		        	query = "";
 		        }
 		        else
 		        {
+		        	
 		        	query = query + line;
+		        	if(newQuery!= null)
+		        		newQuery.setQuery(query);
 		        }
 		        
 		    } 
 		}catch (IOException x) {
 		    System.err.println(x);
 		}
+		if(sqlQuery == null || sqlQuery.size() == 0){
+			throw new Exception("No querries found in the file " + filePath);
+		}
+		return sqlQuery;
 		
 	}
 	
+	private String getConnectionName(String line) {
+		String connName = null; 
+		for(String conn_const : Constants.conn_Const_List){
+			if(line.contains(conn_const)){
+				return conn_const;
+			}
+		}
+		
+		return connName;
+	}
+
 	public void printQuery()
 	{
-		for(int i=0; i <= sqlQueryMap.size(); i++ )
+		
+		for(int i=0; i < sqlQuery.size(); i++ )
 		{
-			newQuery = sqlQueryMap.get(i);
-			System.out.println("\nIndex:" + i + "\nsql:" + newQuery.getQuery());
+			newQuery = sqlQuery.get(i);
+			System.out.println("\nIndex:" + i + "\nname: "+newQuery.getName()+ "\tsql:" + newQuery.getQuery());
 		}
 	}
 }

@@ -52,7 +52,7 @@ public class DatabaseReader {
 	
 	public void setupVariables(String databaseName, Connection conn, String ssn)
 	{
-		if(databaseName.equals("mvas"))
+		if(databaseName.equals(Constants.MVAS_Conn_Const))
 		{
 			// get mvas specific info
 			variables.put("<SSN>", ssn);
@@ -65,7 +65,7 @@ public class DatabaseReader {
 			
 		}
 		
-		if(databaseName.equals("tpa"))
+		if(databaseName.equals(Constants.TPA_Conn_Const))
 		{
 			//get stac specific
 			variables.put("<SSN>", ssn.substring(0, 2) + "-" + ssn.substring(3, 4) + "-" + ssn.subSequence(5, 8) );
@@ -80,7 +80,7 @@ public class DatabaseReader {
 			
 		}
 		
-		if(databaseName.equals("es"))
+		if(databaseName.equals(Constants.ES_Conn_Const))
 		{
 			//get stac event system info
 			variables.put("<SSN>", ssn.substring(0, 2) + "-" + ssn.substring(3, 4) + "-" + ssn.subSequence(5, 8) );

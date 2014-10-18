@@ -26,7 +26,7 @@ public class RunnerTest {
 	}
 	@Test
 	public void testEndTOEnd(){
-		SQLFileParser sfp = new SQLFileParser("/test.sql");
+		SQLFileParser sfp = new SQLFileParser("/mvas.sql");
 		
 		DatabaseReader dr =  new DatabaseReader();
 		List<SqlQueryObject> queryList = null;
@@ -36,7 +36,7 @@ public class RunnerTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String ssn = "374952188";
+		String ssn = "374952166";
 		dr.setUpReader(sfp.getConnName(), conn, ssn, queryList);
 		sfp.printQuery();
 		Map<String, ResultSet> resultSetMap = new HashMap<String,ResultSet>();

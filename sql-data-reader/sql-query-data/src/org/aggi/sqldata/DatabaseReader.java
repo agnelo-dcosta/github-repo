@@ -18,10 +18,10 @@ public class DatabaseReader {
 	{
 		Statement st;
 		ResultSet rs;
-		st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_READ_ONLY);
 		Map<String,ResultSet> resultSetMap = new HashMap<String, ResultSet>();
 		for(SqlQueryObject queryObject: queryList)
 		{
+			st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_READ_ONLY);
 			rs = st.executeQuery(queryObject.getQuery());
 			resultSetMap.put(queryObject.getName(), rs);
 		}

@@ -57,7 +57,7 @@ public class SQLFileParser {
 		        else
 		        {
 		        	
-		        	query = query + line;
+		        	query = query + " " + line;
 		        	query = query.replace(";"," ");
 		        	if(newQuery!= null)
 		        		newQuery.setQuery(query);

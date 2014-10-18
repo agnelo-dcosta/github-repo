@@ -12,6 +12,8 @@ public class Runner {
 //		fileParser.printQuery();
 		
 		ConnectionTest();
+		
+		
 	}
 		
 	public static void ConnectionTest()
@@ -23,7 +25,7 @@ public class Runner {
 		 
 		ResultSet rs = stmt.executeQuery("select * from customer");
 		rs.first();
-	      System.out.println("rows before batch execution= " + rs.getString("customerId") );
+	    System.out.println("rows before batch execution= " + rs.getString("customerId") );
 	      
 		conn.close();
 		}

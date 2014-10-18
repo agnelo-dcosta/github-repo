@@ -44,12 +44,20 @@ public class DataExportImpl implements DataExport {
 				    String address = rs.getString("address");
 
 				    Row dataRow = sheet.createRow(row);
+				    
+				    for( String columnName:columns ) {
+						//Cell headerCell = headerRow.createCell(0);
+						//headerCell.setCellValue(columnName);
+				    	
+				    	 Cell dataNameCell = dataRow.createCell(0);
+						    dataNameCell.setCellValue(name);
+					}
+				    
+				    //Cell dataNameCell = dataRow.createCell(0);
+				    //dataNameCell.setCellValue(name);
 
-				    Cell dataNameCell = dataRow.createCell(0);
-				    dataNameCell.setCellValue(name);
-
-				    Cell dataAddressCell = dataRow.createCell(1);
-				    dataAddressCell.setCellValue(address);
+				    //Cell dataAddressCell = dataRow.createCell(1);
+				    //dataAddressCell.setCellValue(address);
 
 				    row = row + 1;
 				}

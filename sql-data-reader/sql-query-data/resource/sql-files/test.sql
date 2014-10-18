@@ -1,4 +1,5 @@
 --Connection MVAS
 
 --customer
-select * from customer where username = <SSN>;
+select * from customer where username = '<SSN>';
+

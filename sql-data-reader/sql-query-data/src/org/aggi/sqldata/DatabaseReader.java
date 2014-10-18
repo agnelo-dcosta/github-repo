@@ -8,6 +8,7 @@ public class DatabaseReader {
 	String fileName;
 	List <SqlQueryObject> queryList;
 	String database;
+	Map <String,String> variables;
 	
 	public ResultSet readSql(Connection conn, String query) throws SQLException
 	{

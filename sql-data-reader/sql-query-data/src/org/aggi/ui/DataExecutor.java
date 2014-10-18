@@ -1,19 +1,20 @@
 package org.aggi.ui;
 
+import java.awt.Choice;
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import java.awt.Panel;
-import java.awt.BorderLayout;
-import java.awt.Button;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Label;
-import java.awt.TextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Properties;
+
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JTextField;
+
+import org.aggi.sqldata.SQLFileEnumerator;
+import org.aggi.sqldata.ServiceException;
+import org.aggi.sqldata.impl.PropertyConfigReader;
 
 public class DataExecutor {
 
@@ -54,6 +55,28 @@ public class DataExecutor {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
+		Label headerLabel = new Label();
+		headerLabel.setText("Select available sql file: ");
+		headerLabel.setBounds(10, 10, 135, 29);
+		frame.getContentPane().add(headerLabel);
+		
+		Choice sqlFileChoices = new Choice();
+		sqlFileChoices.add("");
+        Properties prop = null;
+		try {
+			prop = PropertyConfigReader.read();
+		} catch (ServiceException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
+		String sqlFilespath = prop.getProperty(PropertyConfigReader.SQL_FILES_PATH);
+		List<String> filenames = SQLFileEnumerator.listSQLFilesInFolder(sqlFilespath);
+		for( String filename: filenames) {
+			sqlFileChoices.add(filename);
+		}
+		sqlFileChoices.setBounds(150, 10, 206, 29);
+		frame.getContentPane().add(sqlFileChoices);
+		
 		JButton btnExecute = new JButton("Execute");
 		btnExecute.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -77,6 +100,7 @@ public class DataExecutor {
 		
 		btnSetting = new JButton("Setting");
 		btnSetting.setBounds(553, 408, 117, 29);
-		frame.getContentPane().add(btnSetting);
+		frame.getContentPane().add(btnSetting);		
+		
 	}
 }

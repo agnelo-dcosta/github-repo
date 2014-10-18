@@ -31,7 +31,7 @@ public class Runner {
 		
 		List <ResultSet> rsOutput = new ArrayList<ResultSet>();
 	
-		dr.readSql(rsOutput);
+		dr.executetQueryList(); 
 		
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

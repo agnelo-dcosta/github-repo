@@ -33,9 +33,11 @@ public class SQLFileParser {
 		    String query = "";
 		    while ((line = reader.readLine()) != null) 
 		    {
+		    	line = line.replaceAll("\n", " ").replaceAll("\r", " ");
+		    	
 		       // System.out.println(line);
 		    	if(line.contains("--Connection ")){
-		    		String patern = "--Connection ";
+		    		
 		    		
 		    		 connName = getConnectionName(line);
 		    		 System.out.println("\nConnName : " + connName);
@@ -56,6 +58,7 @@ public class SQLFileParser {
 		        {
 		        	
 		        	query = query + line;
+		        	query = query.replace(";"," ");
 		        	if(newQuery!= null)
 		        		newQuery.setQuery(query);
 		        }
@@ -90,5 +93,8 @@ public class SQLFileParser {
 			newQuery = sqlQuery.get(i);
 			System.out.println("\nIndex:" + i + "\nname: "+newQuery.getName()+ "\tsql:" + newQuery.getQuery());
 		}
+	}
+	public String getConnName(){
+		return connName;
 	}
 }

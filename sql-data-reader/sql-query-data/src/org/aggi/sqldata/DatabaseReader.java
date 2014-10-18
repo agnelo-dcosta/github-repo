@@ -14,18 +14,18 @@ public class DatabaseReader {
 	Connection conn;
 	String ssn;
 	
-	public void readSql( List <ResultSet> rsOutput ) throws SQLException
+	public Map<String, ResultSet> executetQueryList() throws SQLException
 	{
 		Statement st;
 		ResultSet rs;
 		st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_READ_ONLY);
-		
+		Map<String,ResultSet> resultSetMap = new HashMap<String, ResultSet>();
 		for(SqlQueryObject queryObject: queryList)
 		{
 			rs = st.executeQuery(queryObject.getQuery());
-			rsOutput.add(rs);
+			resultSetMap.put(queryObject.getName(), rs);
 		}
-	
+		return resultSetMap;
 	}
 	
 	public void setUpReader(String databaseName, Connection conn, String ssn, List <SqlQueryObject> queryList)

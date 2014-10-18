@@ -1,7 +1,8 @@
 package org.aggi.sqldata.impl;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.sql.PreparedStatement;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -24,14 +25,17 @@ public class DataExportImpl implements DataExport {
 	 */
 	public void export(String fileName, Map<String,ResultSet> resultSets) throws ServiceException {
 		Workbook wb = new HSSFWorkbook();
+		 int cellNo = 0;
+		 
 		for(String sheetName:resultSets.keySet()) {
 			Sheet sheet = wb.createSheet(sheetName);
 			ResultSet rs = resultSets.get(sheetName);
 			
 			List<String> columns = extractColumns(rs);
 			Row headerRow = sheet.createRow(0);
+			cellNo = 0;
 			for( String columnName:columns ) {
-				Cell headerCell = headerRow.createCell(0);
+				Cell headerCell = headerRow.createCell(cellNo++);
 				headerCell.setCellValue(columnName);
 			}
 			
@@ -40,68 +44,31 @@ public class DataExportImpl implements DataExport {
 			try {
 				int row = 1;
 				while(rs.next()) {
-				    String name = rs.getString("name");
-				    String address = rs.getString("address");
-
-				    Row dataRow = sheet.createRow(row);
+				    Row dataRow = sheet.createRow(row++);
 				    
+				    cellNo = 0;
 				    for( String columnName:columns ) {
-						//Cell headerCell = headerRow.createCell(0);
-						//headerCell.setCellValue(columnName);
-				    	
-				    	 Cell dataNameCell = dataRow.createCell(0);
-						    dataNameCell.setCellValue(name);
+						Cell dataCell = dataRow.createCell(cellNo++);
+						dataCell.setCellValue(rs.getString(columnName));
 					}
-				    
-				    //Cell dataNameCell = dataRow.createCell(0);
-				    //dataNameCell.setCellValue(name);
-
-				    //Cell dataAddressCell = dataRow.createCell(1);
-				    //dataAddressCell.setCellValue(address);
-
-				    row = row + 1;
 				}
 			} catch (SQLException ex) {
 				throw new ServiceException(ex);
 			}
 		}
+		
+		String outputDirPath = "C:/tmp/" + fileName + ".xls";
+		FileOutputStream fileOut;
+		try {
+			fileOut = new FileOutputStream(outputDirPath);
+			wb.write(fileOut);
+			fileOut.close();
+		} catch (FileNotFoundException ex) {
+			throw new ServiceException(ex);
+		} catch (IOException ex) {
+			throw new ServiceException(ex);
+		}
 	}
-	
-	/*public void export(ResultSet rs) throws ServiceException {
-		if(null==rs) {
-			throw new ServiceException("Can't export any row as the ResultSet was null");
-		}
-		//List<String> columns = extractColumns(rs);
-		
-		//Workbook wb = new HSSFWorkbook();
-		//Sheet personSheet = wb.createSheet("PersonList");
-		//Row headerRow = personSheet.createRow(0);
-		//Cell nameHeaderCell = headerRow.createCell(0);
-		//Cell addressHeaderCell = headerRow.createCell(1);
-
-		//String sql = "select name, address from person_table";
-		
-		int row = 1;
-		while(rs.next()) {
-		    String name = resultSet.getString("name");
-		    String address = resultSet.getString("address");
-
-		    Row dataRow = personSheet.createRow(row);
-
-		    Cell dataNameCell = dataRow.createCell(0);
-		    dataNameCell.setCellValue(name);
-
-		    Cell dataAddressCell = dataRow.createCell(1);
-		    dataAddressCell.setCellValue(address);
-
-		    row = row + 1;
-		}
-
-		String outputDirPath = "D:/PersonList.xls";
-		FileOutputStream fileOut = new FileOutputStream(outputDirPath);
-		wb.write(fileOut);
-		fileOut.close();
-	}*/
 	
 	public List<String> extractColumns(ResultSet rs) throws ServiceException {
 		List<String> columns = new ArrayList<String>();
@@ -117,8 +84,6 @@ public class DataExportImpl implements DataExport {
 				  columns.add(name);
 				}
 			} catch (SQLException ex) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
 				throw new ServiceException(ex);
 			}
 			

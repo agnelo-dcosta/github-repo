@@ -1,3 +1,4 @@
+
 --Connection CR
 
 --ec employer contribution
@@ -65,4 +66,3 @@ join location_customer lc on lc.location_customer_id = ph.location_customer_id
 join customer cust on cust.pk = lc.customer_pk
 where cust.username = '$SSN' order by pppc.payroll_date desc;
 
---END

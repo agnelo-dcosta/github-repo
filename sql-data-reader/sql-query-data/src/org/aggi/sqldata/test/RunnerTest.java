@@ -36,7 +36,7 @@ public class RunnerTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String ssn = "374952166";
+		String ssn = "400400203";
 		dr.setUpReader(sfp.getConnName(), conn, ssn, queryList);
 		sfp.printQuery();
 		Map<String, ResultSet> resultSetMap = new HashMap<String,ResultSet>();

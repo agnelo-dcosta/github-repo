@@ -75,14 +75,15 @@ public class DataExecutor {
 		headerLabel.setText("Select available sql file: ");
 		sqlFilesPanelMain.add(headerLabel);
 		
-		 Properties prop = null;
+		Properties prop = null;
 		try {
 			prop = PropertyConfigReader.read();
 		} catch (ServiceException ex) {
-			JOptionPane.showMessageDialog(frame,"Exception : "+ex);
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
 		}
 		String sqlFilespath = prop.getProperty(PropertyConfigReader.SQL_FILES_PATH);
-		final String outputFilePath = prop.getProperty(PropertyConfigReader.OUTPUT_PATH);
+		
 		List<String> filenames = SQLFileEnumerator.listSQLFilesInFolder(sqlFilespath);
 		Panel sqlFilesPanel = new Panel();
 		sqlFilesPanel.setLayout(new GridLayout(filenames.size(),1));
@@ -226,7 +227,8 @@ public class DataExecutor {
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(frame, "Exception : " + e1);
 				}finally{
-					JOptionPane.showMessageDialog(frame, " Outpur files Stored in : " + outputFilePath);
+					//String outputFilePath = prop.getProperty(PropertyConfigReader.OUTPUT_PATH);
+					JOptionPane.showMessageDialog(frame, " Outpur files Stored ");
 				}
 				
 				frame.getContentPane().setEnabled(true);

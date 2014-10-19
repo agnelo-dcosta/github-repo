@@ -10,7 +10,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.aggi.sqldata.DataExport;
 import org.aggi.sqldata.ServiceException;
@@ -26,7 +25,7 @@ public class DataExportImpl implements DataExport {
 	/* (non-Javadoc)
 	 * @see org.aggi.sqldata.DataExport#export(java.lang.String, java.util.Map)
 	 */
-	public void export(String filePath, Map<String,ResultSet> resultSets) throws ServiceException {
+	public boolean export(String filePath, Map<String,ResultSet> resultSets) throws ServiceException {
 		if(null==filePath) {
 			throw new IllegalArgumentException("Can NOT export to a file as the filename was NULL");
 		}
@@ -95,6 +94,7 @@ public class DataExportImpl implements DataExport {
 		} catch (IOException ex) {
 			throw new ServiceException(ex);
 		}
+		return true;
 	}
 	
 	public List<String> extractColumns(ResultSet rs) throws ServiceException {

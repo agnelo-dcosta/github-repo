@@ -5,6 +5,6 @@ import java.util.Map;
 
 public interface DataExport {
 
-	public abstract void export(String fileName, Map<String, ResultSet> resultSets) throws ServiceException;
+	public abstract boolean export(String fileName, Map<String, ResultSet> resultSets) throws ServiceException;
 
 }

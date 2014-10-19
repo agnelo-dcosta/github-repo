@@ -32,7 +32,7 @@ import org.aggi.sqldata.impl.PropertyConfigReader;
 public class DataExecutor {
 
 	private static JFrame frame = null;
-	private JButton btnSetting = null;
+	private JButton btnSetting = null;  
 	private final Runner runner = new Runner();
 
 	/**

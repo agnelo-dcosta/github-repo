@@ -228,7 +228,7 @@ public class DataExecutor {
 					JOptionPane.showMessageDialog(frame, "Exception : " + e1);
 				}finally{
 					//String outputFilePath = prop.getProperty(PropertyConfigReader.OUTPUT_PATH);
-					JOptionPane.showMessageDialog(frame, " Outpur files Stored ");
+					JOptionPane.showMessageDialog(frame, " Output files Stored ");
 				}
 				
 				frame.getContentPane().setEnabled(true);

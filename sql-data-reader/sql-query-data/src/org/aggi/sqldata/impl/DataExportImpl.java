@@ -26,8 +26,8 @@ public class DataExportImpl implements DataExport {
 	/* (non-Javadoc)
 	 * @see org.aggi.sqldata.DataExport#export(java.lang.String, java.util.Map)
 	 */
-	public void export(String fileName, Map<String,ResultSet> resultSets) throws ServiceException {
-		if(null==fileName) {
+	public void export(String filePath, Map<String,ResultSet> resultSets) throws ServiceException {
+		if(null==filePath) {
 			throw new IllegalArgumentException("Can NOT export to a file as the filename was NULL");
 		}
 		
@@ -84,9 +84,7 @@ public class DataExportImpl implements DataExport {
 			}
 		}
 	
-		Properties prop = PropertyConfigReader.read();
-		String outputpath = prop.getProperty(PropertyConfigReader.OUTPUT_PATH);
-		String outputDirPath = outputpath + fileName + OUTPUT_FILENAME_EXT;
+		String outputDirPath =  filePath + OUTPUT_FILENAME_EXT;
 		FileOutputStream fileOut = null;
 		try {
 			fileOut = new FileOutputStream(outputDirPath);

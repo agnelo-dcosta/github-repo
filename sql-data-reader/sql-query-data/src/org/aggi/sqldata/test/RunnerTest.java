@@ -37,7 +37,7 @@ public class RunnerTest {
 			e.printStackTrace();
 		}
 		String ssn = "374952166";
-		dr.setUpReader(sfp.getConnName(), conn, ssn, queryList);
+		dr.setUpReader( conn, sfp.getConnName(),new HashMap<String, String>(), queryList);
 		sfp.printQuery();
 		Map<String, ResultSet> resultSetMap = new HashMap<String,ResultSet>();
 		

@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap; 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+
+import org.aggi.sqldata.impl.PropertyConfigReader;
+import org.apache.poi.hpsf.Property;
 
 public class SQLFileParser {
 
@@ -17,9 +21,8 @@ public class SQLFileParser {
 	
 	public SQLFileParser(String sqlFilePath)
 	{
-		String currentDirectory = System.getProperty("user.dir");
-	    System.out.println(currentDirectory);
-		filePath = currentDirectory + "/resource/sql-files/" +sqlFilePath;
+		
+		filePath = sqlFilePath;
 		
 	}
 	

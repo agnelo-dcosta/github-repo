@@ -2,8 +2,14 @@ package org.aggi.sqldata;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+
+import org.aggi.sqldata.impl.DataExportImpl;
+import org.aggi.sqldata.impl.PropertyConfigReader;
+
 
 public class Runner {
 
@@ -14,25 +20,46 @@ public class Runner {
 //		fileParser.printQuery();
 		
 		try {
-		ConnectionTest();
 		
-		Connection conn = new DatabaseConn().getConnection("jdbc:oracle:thin:@EISORA001:1522:tiaa001", "AGGI2", "AGGI2_123");
-		DatabaseReader dr =  new DatabaseReader();
-		List <SqlQueryObject> rsInput = new ArrayList<SqlQueryObject>();
+			Properties prop = PropertyConfigReader.read();
+			String sqlFileBasePath = prop.getProperty(PropertyConfigReader.SQL_FILES_PATH);
+			String dbConnPath = prop.getProperty(PropertyConfigReader.DB_CONFIG_PATH);
+			String outPutFilePath = prop.getProperty(PropertyConfigReader.OUTPUT_PATH);
+		//TODO : Get from front end
+		List<String> sqlFileNameList = new ArrayList<String>();
+		//TODO: Take variables from frontEnd
+		Map<String,String> variables = new HashMap<String, String>();
 		
-		SqlQueryObject testQuery = new SqlQueryObject();
-		testQuery.setName("Customer");
-		testQuery.setQuery("Select username, customerid, firstname, lastname from customer where username = '<SSN>'");
+		//TODO: get dbCOnfidFIle name from frontEnd 
+		String dbConfigFileName = "conn.txt";
 		
-		rsInput.add(testQuery);
+		DatabaseConnectionParser dcp = new DatabaseConnectionParser(dbConnPath+dbConfigFileName);
 		
-		dr.setUpReader(Constants.MVAS_Conn_Const, conn, "374952188", rsInput);
-		dr.replaceVariables();
+		Map<String,Connection> connectionMap = dcp.createConnectionMap();
+		for(String sqlFileName : sqlFileNameList){
+			SQLFileParser sfp = new SQLFileParser(sqlFileName);
+			List<SqlQueryObject> queryObjList = sfp.createListOfQueries();
+			
+			DatabaseReader dr =  new DatabaseReader();
+			Connection conn = connectionMap.get(sfp.getConnName());
+			if(conn != null) {
 		
-		List <ResultSet> rsOutput = new ArrayList<ResultSet>();
-	
-		dr.executetQueryList(); 
+			
+			dr.setUpReader(conn,sfp.getConnName(), variables , queryObjList);
+			dr.replaceVariables();
+			
+			sfp.printQuery();
+			Map<String, ResultSet> resultSetMap = dr.executetQueryList();
+			dr.executetQueryList(); 
+			DataExport de = new DataExportImpl();
+			String outputFileName = sqlFileName.substring(0,sqlFileName.indexOf("."));//to get file name without .sql
+				de.export(outPutFilePath + outputFileName, resultSetMap);
 		
+		}else{
+			throw new Exception("Connection Not setUp correctly");
+		}
+			
+		}
 		
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -40,24 +67,7 @@ public class Runner {
 		}
 	}
 		
-	public static void ConnectionTest()
-	{
-		try{
-		DatabaseConn  dbconn= new DatabaseConn();
-		Connection conn = dbconn.getConnection("jdbc:oracle:thin:@EISORA001:1522:tiaa001", "AGGI2", "AGGI2_123");
-		Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_READ_ONLY);
-		 
-		ResultSet rs = stmt.executeQuery("select * from customer");
-		rs.first();
-	    System.out.println("rows before batch execution= " + rs.getString("customerId") );
-	      
-		conn.close();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
+	
 	
 
 }

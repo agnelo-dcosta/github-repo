@@ -8,14 +8,15 @@ import java.util.Map;
 public class DatabaseReader {
 
 	String fileName;
-	List <SqlQueryObject> queryList;
-	String database;
-	Map <String,String> variables;
+	private static List <SqlQueryObject> queryList;
+	String databaseName;
+	private static Map <String,String> variables;
 	Connection conn;
-	String ssn;
+	 String ssn;
 	
 	public Map<String, ResultSet> executetQueryList() throws SQLException
 	{
+		
 		Statement st;
 		ResultSet rs;
 		Map<String,ResultSet> resultSetMap = new HashMap<String, ResultSet>();
@@ -28,15 +29,15 @@ public class DatabaseReader {
 		return resultSetMap;
 	}
 	
-	public void setUpReader(String databaseName, Connection conn, String ssn, List <SqlQueryObject> queryList)
+	public void setUpReader( Connection conn,String databaseName,Map <String,String> variables, List <SqlQueryObject> queryList)
 	{
 		this.conn = conn;
 		this.queryList = queryList;
-		variables = new HashMap<String,String>();
+		this.databaseName = databaseName;
 		
-		setupVariables(databaseName, conn, ssn);
 		
 		replaceVariables();
+		
 	}
 	
 	public void replaceVariables()
@@ -45,49 +46,17 @@ public class DatabaseReader {
 		{
 			for (String variableName : variables.keySet() )
 			{
-				replaceQuery.setQuery(replaceQuery.getQuery().replaceAll( variableName , variables.get(variableName)));
+				if(variableName.equals("<SSN>") && databaseName.equals(Constants.TPA_Conn_Const)){
+					replaceQuery.setQuery(replaceQuery.getQuery().replaceAll( variableName , 
+							variables.get(variableName).substring(0, 3) + "-" + variables.get(variableName).substring(3, 5) + "-" + variables.get(variableName).subSequence(5, 9)));
+				}else{
+
+					replaceQuery.setQuery(replaceQuery.getQuery().replaceAll( variableName , variables.get(variableName)));
+				}
+				
+				
 			}
 		}
 	}
 	
-	public void setupVariables(String databaseName, Connection conn, String ssn)
-	{
-		if(databaseName.equals(Constants.MVAS_Conn_Const))
-		{
-			// get mvas specific info
-			variables.put("<SSN>", ssn);
-			
-			//get client
-			
-			//get employer
-			
-			//get location
-			
-		}
-		
-		if(databaseName.equals(Constants.TPA_Conn_Const))
-		{
-			//get stac specific
-			variables.put("<SSN>", ssn.substring(0, 3) + "-" + ssn.substring(3, 5) + "-" + ssn.subSequence(5, 9) );
-		
-			//get client
-			
-			
-			//get employer
-			
-			
-			//get location
-			
-		}
-		
-		if(databaseName.equals(Constants.ES_Conn_Const))
-		{
-			//get stac event system info
-			variables.put("<SSN>", ssn.substring(0, 2) + "-" + ssn.substring(3, 4) + "-" + ssn.subSequence(5, 8) );
-		
-			//get latest payroll id
-			
-			//get file UUID
-		}
-	}
 }

@@ -30,7 +30,12 @@ public class SQLFileEnumerator {
 	    return sqlFiles;
 	}
 	
-	public static Map<String,Set<String>> getVariablesInSQLFiles(final File folder) throws IOException {
+	public static Map<String,Set<String>> getVariablesInSQLFiles(final String sqlFilespath) throws ServiceException {
+		final File folder = new File(sqlFilespath);
+		return getVariablesInSQLFiles(folder);
+	}
+	
+	public static Map<String,Set<String>> getVariablesInSQLFiles(final File folder) throws ServiceException {
 		Map<String,Set<String>> variableMap = new HashMap<String,Set<String>>();
 		Pattern patt = Pattern.compile("<[A-Za-z]+>");
 		 for (File fileEntry : folder.listFiles()) {
@@ -39,20 +44,28 @@ public class SQLFileEnumerator {
 			 
 			 Set<String> variableArray = new TreeSet<String>();
 			 
-			 FileReader fr = new FileReader(fileEntry.getAbsolutePath());
+			 FileReader fr;
+			try {
+				fr = new FileReader(fileEntry.getAbsolutePath());
+			
 				BufferedReader reader = new BufferedReader(fr) ;
 			    String line = null;
 			    String query = "";
-			    while ((line = reader.readLine()) != null) 
-			    {
-			    	Matcher m = patt.matcher(line);
-			    	while(m.find())
-			    	{
-			    	//	System.out.println(line.substring(m.start(0), m.end(0)));
-			    		variableArray.add(line.substring(m.start(0), m.end(0)));
-			    	}
-			    }
+				while ((line = reader.readLine()) != null) 
+				{
+					Matcher m = patt.matcher(line);
+					while(m.find())
+					{
+					//	System.out.println(line.substring(m.start(0), m.end(0)));
+						variableArray.add(line.substring(m.start(0), m.end(0)));
+					}
+				}
 			    variableMap.put(fileName, variableArray);
+			} catch (FileNotFoundException ex) {
+				throw new ServiceException(ex);
+			} catch (IOException ex) {
+				throw new ServiceException(ex);
+			}
 		 }
 		
 		return variableMap; 

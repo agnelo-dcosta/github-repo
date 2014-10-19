@@ -1,8 +1,8 @@
 package org.aggi.sqldata;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -13,13 +13,11 @@ import org.aggi.sqldata.impl.PropertyConfigReader;
 
 public class Runner {
 
-	public void dataExtractorRunner(List<String> sqlFileNameList, Map<String,String> variables, String dbConfigFileName)
-	{
-		
-	
+	public boolean dataExtractorRunner(List<String> sqlFileNameList, Map<String,String> variables, String dbConfigFileName) throws ServiceException {
+
 		System.out.println("Starting Data Reader");
-//		SQLFileParser fileParser = new SQLFileParser("mvas.txt");
-//		fileParser.printQuery();
+		//SQLFileParser fileParser = new SQLFileParser("mvas.txt");
+		//fileParser.printQuery();
 		
 		try {
 		
@@ -27,52 +25,49 @@ public class Runner {
 			String sqlFileBasePath = prop.getProperty(PropertyConfigReader.SQL_FILES_PATH);
 			String dbConnPath = prop.getProperty(PropertyConfigReader.DB_CONFIG_PATH);
 			String outPutFilePath = prop.getProperty(PropertyConfigReader.OUTPUT_PATH);
-		//TODO : Get from front end
-//		 sqlFileNameList = new ArrayList<String>();
-//		sqlFileNameList.add("mvas.sql");
-//		sqlFileNameList.add("stac.sql");
-		//TODO: Take variables from frontEnd
-//		 variables = new HashMap<String, String>();
-//		variables.put("<SSN>", "400400203");
-		//TODO: get dbCOnfidFIle name from frontEnd 
-//		 dbConfigFileName = "conn.txt";
-//		
-		DatabaseConnectionParser dcp = new DatabaseConnectionParser(dbConnPath+dbConfigFileName);
+			//TODO : Get from front end
+			//sqlFileNameList = new ArrayList<String>();
+			//sqlFileNameList.add("mvas.sql");
+			//sqlFileNameList.add("stac.sql");
+			//TODO: Take variables from frontEnd
+			//variables = new HashMap<String, String>();
+			//variables.put("<SSN>", "400400203");
+			//TODO: get dbCOnfidFIle name from frontEnd 
+			//dbConfigFileName = "conn.txt";
+			//
+			DatabaseConnectionParser dcp = new DatabaseConnectionParser(dbConnPath+dbConfigFileName);
 		
-		Map<String,Connection> connectionMap = dcp.createConnectionMap();
-		for(String sqlFileName : sqlFileNameList){
-			SQLFileParser sfp = new SQLFileParser(sqlFileBasePath + sqlFileName);
-			List<SqlQueryObject> queryObjList = sfp.createListOfQueries();
-			
-			DatabaseReader dr =  new DatabaseReader();
-			Connection conn = connectionMap.get(sfp.getConnName());
-			if(conn != null) {
-		
-			
-			dr.setUpReader(conn,sfp.getConnName(), variables , queryObjList);
-			dr.replaceVariables();
-			
-			sfp.printQuery();
-			Map<String, ResultSet> resultSetMap = dr.executetQueryList();
-			dr.executetQueryList(); 
-			DataExport de = new DataExportImpl();
-			String outputFileName = sqlFileName.substring(0,sqlFileName.indexOf("."));//to get file name without .sql
-				de.export(outPutFilePath + outputFileName, resultSetMap);
-		
-		}else{
-			throw new Exception("Connection Not setUp correctly");
+			Map<String,Connection> connectionMap = dcp.createConnectionMap();
+			for(String sqlFileName : sqlFileNameList){
+				SQLFileParser sfp = new SQLFileParser(sqlFileBasePath + sqlFileName);
+				List<SqlQueryObject> queryObjList = sfp.createListOfQueries();
+				
+				DatabaseReader dr =  new DatabaseReader();
+				Connection conn = connectionMap.get(sfp.getConnName());
+				if(conn != null) {
+				
+				
+					dr.setUpReader(conn,sfp.getConnName(), variables , queryObjList);
+					dr.replaceVariables();
+					
+					sfp.printQuery();
+					Map<String, ResultSet> resultSetMap = dr.executetQueryList();
+					dr.executetQueryList(); 
+					DataExport de = new DataExportImpl();
+					String outputFileName = sqlFileName.substring(0,sqlFileName.indexOf("."));//to get file name without .sql
+					de.export(outPutFilePath + outputFileName, resultSetMap);
+				
+				}else{
+					throw new ServiceException("Connection Not setUp correctly");
+				}
+			}		
+		} catch (SQLException ex) {
+			throw new ServiceException(ex);
+		} catch (Exception ex) {
+			throw new ServiceException(ex);
 		}
-			
-		}
-		
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		return true;
 	}
-		
-	
-	
 
 }
 

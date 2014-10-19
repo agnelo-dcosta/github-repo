@@ -30,8 +30,9 @@ import org.aggi.sqldata.impl.PropertyConfigReader;
 
 public class DataExecutor {
 
-	private JFrame frame;
-	private JButton btnSetting;
+	private JFrame frame = null;
+	private JButton btnSetting = null;
+	private final Runner runner = new Runner();
 
 	/**
 	 * Launch the application.
@@ -201,7 +202,12 @@ public class DataExecutor {
 					}
 					
 				}
-				new Runner().dataExtractorRunner(sqlFileNameList, variables, "conn.txt");
+				try {
+					runner.dataExtractorRunner(sqlFileNameList, variables, "conn.txt");
+				} catch (ServiceException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		buttonsPanel.add(btnExecute);

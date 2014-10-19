@@ -63,4 +63,7 @@ from PAYROLL_DATA PD join EMPLOYEES EMP on EMP.EMPLOYEE_UUID = PD.EMPLOYEE_UUID
 where EMP.SOCIAL_SECURITY_NUMBER like '<SSN>'
  order by EMP.PAYROLL_DATE, EMP.EMPLOYEE_UUID, PD.DISPLAY_NAME;
  
-
+--input file for employee
+select emp.payroll_date, inf.* from input_files inf  join employees emp on inf.payroll_uuid = emp.payroll_uuid
+where emp.social_security_number like '<SSN>'
+order by emp.payroll_date;

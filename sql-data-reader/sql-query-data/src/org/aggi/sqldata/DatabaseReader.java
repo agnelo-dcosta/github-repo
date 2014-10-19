@@ -34,7 +34,7 @@ public class DatabaseReader {
 		this.conn = conn;
 		this.queryList = queryList;
 		this.databaseName = databaseName;
-		
+		this.variables = variables;
 		
 		replaceVariables();
 		

@@ -1,8 +1,14 @@
 package org.aggi.sqldata;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SQLFileEnumerator {
 
@@ -22,6 +28,34 @@ public class SQLFileEnumerator {
 	        }
 	    }
 	    return sqlFiles;
+	}
+	
+	public static Map<String,Set<String>> getVariablesInSQLFiles(final File folder) throws IOException {
+		Map<String,Set<String>> variableMap = new HashMap<String,Set<String>>();
+		Pattern patt = Pattern.compile("<[A-Za-z]+>");
+		 for (File fileEntry : folder.listFiles()) {
+			 
+			 String fileName =  fileEntry.getName(); 
+			 
+			 Set<String> variableArray = new TreeSet<String>();
+			 
+			 FileReader fr = new FileReader(fileEntry.getAbsolutePath());
+				BufferedReader reader = new BufferedReader(fr) ;
+			    String line = null;
+			    String query = "";
+			    while ((line = reader.readLine()) != null) 
+			    {
+			    	Matcher m = patt.matcher(line);
+			    	while(m.find())
+			    	{
+			    	//	System.out.println(line.substring(m.start(0), m.end(0)));
+			    		variableArray.add(line.substring(m.start(0), m.end(0)));
+			    	}
+			    }
+			    variableMap.put(fileName, variableArray);
+		 }
+		
+		return variableMap; 
 	}
 
 }

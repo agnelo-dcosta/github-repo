@@ -84,7 +84,7 @@ public class DatabaseConnectionParser {
 				        {
 				    	   line = reader.readLine();
 				    		 userName = line.trim();
-				    		 System.out.println("\nUsername :" + userName);
+				    		 System.out.println("Username :" + userName);
 				    		 if(userName == null){
 				    			 throw new Exception("No Valid userName  in the file");
 				    		 }
@@ -93,7 +93,7 @@ public class DatabaseConnectionParser {
 				        {
 				    	   line = reader.readLine();
 				    		 password = line.trim();
-				    		 System.out.println("\npassword :" + password);
+				    		 System.out.println("password :" + password);
 				    		 if(password == null){
 				    			 throw new Exception("No Valid password in the file");
 				    		 }
@@ -102,7 +102,7 @@ public class DatabaseConnectionParser {
 				        {
 				    	   line = reader.readLine();
 				    	   connString = line.trim();
-				    		 System.out.println("\nconnString :" + connString);
+				    		 System.out.println("connString :" + connString);
 				    		 if(connString == null || password == null || userName == null) {
 				    			 throw new Exception("No Valid connString in the file");
 				    		 }else{

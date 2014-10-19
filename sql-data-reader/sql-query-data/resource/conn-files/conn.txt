@@ -1,26 +1,26 @@
 --Name
 MVAS
 --Username
-AGGI2
+TIAACRSPRINT04
 --Password
-AGGI2_123
+TIAACRSPRINT04_123
 --ConnectionString
-jdbc:oracle:thin:@EISORA001:1522:tiaa001
+jdbc:oracle:thin:@EISORA040:1522:tiaa014
 
 --Name
 TPA
 --Username
-AGGI2_TPA
+TIAASTACTPASPRINT04
 --Password
-AGGI2_TPA_123
+TIAASTACTPASPRINT04_123
 --ConnectionString
-jdbc:oracle:thin:@EISORA001:1522:tiaa001
+jdbc:oracle:thin:@EISORA040:1522:tiaa014
 
 --Name
 ES
 --Username
-AGGI2_TPAES
+TIAASTACTPAESSPRINT04
 --Password
-AGGI2_TPAES_123
+TIAASTACTPAESSPRINT04_123
 --ConnectionString
-jdbc:oracle:thin:@EISORA001:1522:tiaa001
+jdbc:oracle:thin:@EISORA040:1522:tiaa014

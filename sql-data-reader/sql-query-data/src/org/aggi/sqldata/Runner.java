@@ -16,9 +16,7 @@ public class Runner {
 	public void dataExtractorRunner(List<String> sqlFileNameList, Map<String,String> variables, String dbConfigFileName)
 	{
 		
-	}
-	public static void main(String args[])
-	{
+	
 		System.out.println("Starting Data Reader");
 //		SQLFileParser fileParser = new SQLFileParser("mvas.txt");
 //		fileParser.printQuery();
@@ -30,15 +28,15 @@ public class Runner {
 			String dbConnPath = prop.getProperty(PropertyConfigReader.DB_CONFIG_PATH);
 			String outPutFilePath = prop.getProperty(PropertyConfigReader.OUTPUT_PATH);
 		//TODO : Get from front end
-		List<String> sqlFileNameList = new ArrayList<String>();
-		sqlFileNameList.add("mvas.sql");
-		sqlFileNameList.add("stac.sql");
+//		 sqlFileNameList = new ArrayList<String>();
+//		sqlFileNameList.add("mvas.sql");
+//		sqlFileNameList.add("stac.sql");
 		//TODO: Take variables from frontEnd
-		Map<String,String> variables = new HashMap<String, String>();
-		variables.put("<SSN>", "400400203");
+//		 variables = new HashMap<String, String>();
+//		variables.put("<SSN>", "400400203");
 		//TODO: get dbCOnfidFIle name from frontEnd 
-		String dbConfigFileName = "conn.txt";
-		
+//		 dbConfigFileName = "conn.txt";
+//		
 		DatabaseConnectionParser dcp = new DatabaseConnectionParser(dbConnPath+dbConfigFileName);
 		
 		Map<String,Connection> connectionMap = dcp.createConnectionMap();

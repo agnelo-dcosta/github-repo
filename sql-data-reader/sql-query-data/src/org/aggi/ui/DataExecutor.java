@@ -1,7 +1,6 @@
 package org.aggi.ui;
 
 import java.awt.Checkbox;
-import java.awt.CheckboxGroup;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
@@ -32,8 +31,6 @@ import org.aggi.sqldata.impl.PropertyConfigReader;
 public class DataExecutor {
 
 	private JFrame frame;
-	private JTextField textSSN;
-	private JTextField textClientName;
 	private JButton btnSetting;
 
 	/**
@@ -73,7 +70,6 @@ public class DataExecutor {
 		sqlFilesPanelMain.setLayout(new FlowLayout(FlowLayout.LEFT));
 		Label headerLabel = new Label();
 		headerLabel.setText("Select available sql file: ");
-		//headerLabel.setBounds(10, 10, 135, 29);
 		sqlFilesPanelMain.add(headerLabel);
 		
 		Properties prop = null;
@@ -121,7 +117,6 @@ public class DataExecutor {
 						text = new JTextField();
 						text.setText(variable);
 						((Component) text).setEnabled(false);
-						//textSSN.setBounds(40, 48, 134, 28);
 						variablesPanel.add(text);
 						text.setColumns(10);
 						controlsMap.put(variable, text);
@@ -133,11 +128,9 @@ public class DataExecutor {
 			
 			
 			Checkbox chkSQLFile = null;
-			//CheckboxGroup cbg = new CheckboxGroup();
 			for( String filename: filenames) {
 				chkSQLFile = new Checkbox(filename);
 				checkboxesMap.put(filename, chkSQLFile);
-				//cbg.add(chkSQLFile);
 				chkSQLFile.addItemListener(new ItemListener() {
 					public void itemStateChanged(ItemEvent e) {             
 						if(e.getStateChange()==1) {
@@ -152,7 +145,6 @@ public class DataExecutor {
 									control.setEnabled(true);
 								}
 							}
-							//JOptionPane.showMessageDialog(null, filename, "InfoBox: ", JOptionPane.INFORMATION_MESSAGE);
 						} else {
 							
 							String filename = ((Checkbox) e.getSource()).getLabel();
@@ -181,7 +173,6 @@ public class DataExecutor {
 			
 			frame.getContentPane().add(variablesPanel);
 		} catch (ServiceException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -213,13 +204,10 @@ public class DataExecutor {
 				new Runner().dataExtractorRunner(sqlFileNameList, variables, "conn.txt");
 			}
 		});
-		//btnExecute.setBounds(237, 408, 206, 29);
 		buttonsPanel.add(btnExecute);
 		
 		btnSetting = new JButton("Setting");
-		//btnSetting.setBounds(553, 408, 117, 29);
 		buttonsPanel.add(btnSetting);
 		frame.getContentPane().add(buttonsPanel);
-		
 	}
 }

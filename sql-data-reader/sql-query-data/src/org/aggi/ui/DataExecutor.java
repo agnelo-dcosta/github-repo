@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.Label;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,6 +20,7 @@ import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import org.aggi.sqldata.Runner;
@@ -69,7 +69,7 @@ public class DataExecutor {
 		
 		Panel sqlFilesPanelMain = new Panel();
 		sqlFilesPanelMain.setLayout(new FlowLayout(FlowLayout.LEFT));
-		Label headerLabel = new Label();
+		JLabel headerLabel = new JLabel();
 		headerLabel.setText("Select available sql file: ");
 		sqlFilesPanelMain.add(headerLabel);
 		
@@ -98,28 +98,28 @@ public class DataExecutor {
 			Set<String> variables = null;
 			Set<String> fields = null;
 			JTextField text = null;
-			Label label = null;
+			JLabel label = null;
+			
 			for(String key:variablesMap.keySet()) {
+				
 				variables = variablesMap.get(key);
 				for(String variable:variables) {
+					
 					variable = variable.replace("<", "").replace(">", "");
 					if(!fieldsMap.keySet().contains(variable)) {
-						label = new Label();
+						
+						label = new JLabel();
 						label.setText(variable + ": ");
-						if(fieldsMap.containsKey(variable)) {
-							fields = fieldsMap.get(variable);
-							fields.add(key);
-						} else {
-							fields = new HashSet<String>();
-							fields.add(key);
-							fieldsMap.put(variable, fields);
-						}
 						variablesPanel.add(label);
+												
 						text = new JTextField();
 						text.setText(variable);
-						((Component) text).setEnabled(false);
+						text.setEnabled(false);
 						variablesPanel.add(text);
 						text.setColumns(10);
+						
+						label.setLabelFor(text);
+						
 						controlsMap.put(variable, text);
 						fields = new HashSet<String>();
 						fieldsMap.put(variable, fields);
@@ -130,11 +130,15 @@ public class DataExecutor {
 			
 			Checkbox chkSQLFile = null;
 			for( String filename: filenames) {
+				
 				chkSQLFile = new Checkbox(filename);
 				checkboxesMap.put(filename, chkSQLFile);
+				
 				chkSQLFile.addItemListener(new ItemListener() {
-					public void itemStateChanged(ItemEvent e) {             
+					public void itemStateChanged(ItemEvent e) {   
+						
 						if(e.getStateChange()==1) {
+							
 							String filename = ((Checkbox) e.getSource()).getLabel();
 							Set<String> variables = variablesMap.get(filename);
 							for(String variable:variables) {
@@ -146,6 +150,7 @@ public class DataExecutor {
 									control.setEnabled(true);
 								}
 							}
+							
 						} else {
 							
 							String filename = ((Checkbox) e.getSource()).getLabel();
@@ -163,6 +168,7 @@ public class DataExecutor {
 							}
 								 
 						}
+						
 						variablesPanel.validate();
 						variablesPanel.repaint();
 					}
@@ -185,9 +191,11 @@ public class DataExecutor {
 		JButton btnExecute = new JButton("Execute");
 		btnExecute.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 				System.out.println("Execute Action");
 				Map<String,String> variables = new HashMap<String,String>();
 				List<String> sqlFileNameList = new ArrayList<String>();
+				
 				for(String filename:checkboxesMap.keySet()) {
 					Checkbox checkbox = checkboxesMap.get(filename);
 					if(checkbox.getState()) {
@@ -200,14 +208,16 @@ public class DataExecutor {
 					if(control instanceof JTextField) {
 						variables.put("<" + variable + ">", ((JTextField) control).getText());
 					}
-					
 				}
+				
 				try {
+					frame.getContentPane().setEnabled(false);
 					runner.dataExtractorRunner(sqlFileNameList, variables, "conn.txt");
 				} catch (ServiceException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+				frame.getContentPane().setEnabled(true);
 			}
 		});
 		buttonsPanel.add(btnExecute);

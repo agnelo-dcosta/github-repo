@@ -19,6 +19,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -63,7 +64,7 @@ public class DataExecutor {
 	 */
 	private void initialize() {
 		
-		frame = new JFrame();
+		frame = new JFrame("GETTY");
 		frame.setBounds(100, 100, 695, 483);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new GridLayout(3,1));
@@ -74,15 +75,14 @@ public class DataExecutor {
 		headerLabel.setText("Select available sql file: ");
 		sqlFilesPanelMain.add(headerLabel);
 		
-		Properties prop = null;
+		 Properties prop = null;
 		try {
 			prop = PropertyConfigReader.read();
 		} catch (ServiceException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
+			JOptionPane.showMessageDialog(frame,"Exception : "+ex);
 		}
 		String sqlFilespath = prop.getProperty(PropertyConfigReader.SQL_FILES_PATH);
-		
+		final String outputFilePath = prop.getProperty(PropertyConfigReader.OUTPUT_PATH);
 		List<String> filenames = SQLFileEnumerator.listSQLFilesInFolder(sqlFilespath);
 		Panel sqlFilesPanel = new Panel();
 		sqlFilesPanel.setLayout(new GridLayout(filenames.size(),1));
@@ -187,8 +187,17 @@ public class DataExecutor {
 		
 		Panel buttonsPanel = new Panel();
 		buttonsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		//Label for connection drop down
+		JLabel labelForConn = new JLabel();
+		labelForConn.setText("Connection: ");
+		buttonsPanel.add(labelForConn);
 		
+		//Dropdown for connections
+		String connFilePath = prop.getProperty(PropertyConfigReader.DB_CONFIG_PATH);
+		List<String> dbConfigFilenames = SQLFileEnumerator.listSQLFilesInFolder(connFilePath);
+		final JComboBox connList = new JComboBox(dbConfigFilenames.toArray());
 		
+		buttonsPanel.add(connList);
 		JButton btnExecute = new JButton("Execute");
 		btnExecute.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -213,17 +222,20 @@ public class DataExecutor {
 				
 				try {
 					frame.getContentPane().setEnabled(false);
-					runner.dataExtractorRunner(sqlFileNameList, variables, "conn.txt");
+					runner.dataExtractorRunner(sqlFileNameList, variables, connList.getSelectedItem().toString());
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(frame, "Exception : " + e1);
+				}finally{
+					JOptionPane.showMessageDialog(frame, " Outpur files Stored in : " + outputFilePath);
 				}
+				
 				frame.getContentPane().setEnabled(true);
 			}
 		});
 		buttonsPanel.add(btnExecute);
-		
-		btnSetting = new JButton("Setting");
-		buttonsPanel.add(btnSetting);
+//		
+//		btnSetting = new JButton("Setting");
+//		buttonsPanel.add(btnSetting);
 		frame.getContentPane().add(buttonsPanel);
 	}
 }

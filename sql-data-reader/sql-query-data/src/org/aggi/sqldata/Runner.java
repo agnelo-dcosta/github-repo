@@ -13,6 +13,10 @@ import org.aggi.sqldata.impl.PropertyConfigReader;
 
 public class Runner {
 
+	public void dataExtractorRunner(List<String> sqlFileNameList, Map<String,String> variables, String dbConfigFileName)
+	{
+		
+	}
 	public static void main(String args[])
 	{
 		System.out.println("Starting Data Reader");
@@ -27,9 +31,11 @@ public class Runner {
 			String outPutFilePath = prop.getProperty(PropertyConfigReader.OUTPUT_PATH);
 		//TODO : Get from front end
 		List<String> sqlFileNameList = new ArrayList<String>();
+		sqlFileNameList.add("mvas.sql");
+		sqlFileNameList.add("stac.sql");
 		//TODO: Take variables from frontEnd
 		Map<String,String> variables = new HashMap<String, String>();
-		
+		variables.put("<SSN>", "400400203");
 		//TODO: get dbCOnfidFIle name from frontEnd 
 		String dbConfigFileName = "conn.txt";
 		
@@ -37,7 +43,7 @@ public class Runner {
 		
 		Map<String,Connection> connectionMap = dcp.createConnectionMap();
 		for(String sqlFileName : sqlFileNameList){
-			SQLFileParser sfp = new SQLFileParser(sqlFileName);
+			SQLFileParser sfp = new SQLFileParser(sqlFileBasePath + sqlFileName);
 			List<SqlQueryObject> queryObjList = sfp.createListOfQueries();
 			
 			DatabaseReader dr =  new DatabaseReader();

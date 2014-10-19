@@ -1,12 +1,10 @@
 package org.aggi.ui;
 
 import java.awt.Checkbox;
-import java.awt.CheckboxGroup;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.Label;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,6 +20,8 @@ import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import org.aggi.sqldata.Runner;
@@ -31,10 +31,9 @@ import org.aggi.sqldata.impl.PropertyConfigReader;
 
 public class DataExecutor {
 
-	private JFrame frame;
-	private JTextField textSSN;
-	private JTextField textClientName;
-	private JButton btnSetting;
+	private static JFrame frame = null;
+	private JButton btnSetting = null;
+	private final Runner runner = new Runner();
 
 	/**
 	 * Launch the application.
@@ -46,7 +45,7 @@ public class DataExecutor {
 					DataExecutor window = new DataExecutor();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(frame, "Exception : " + e);
 				}
 			}
 		});
@@ -71,9 +70,8 @@ public class DataExecutor {
 		
 		Panel sqlFilesPanelMain = new Panel();
 		sqlFilesPanelMain.setLayout(new FlowLayout(FlowLayout.LEFT));
-		Label headerLabel = new Label();
+		JLabel headerLabel = new JLabel();
 		headerLabel.setText("Select available sql file: ");
-		//headerLabel.setBounds(10, 10, 135, 29);
 		sqlFilesPanelMain.add(headerLabel);
 		
 		Properties prop = null;
@@ -101,29 +99,28 @@ public class DataExecutor {
 			Set<String> variables = null;
 			Set<String> fields = null;
 			JTextField text = null;
-			Label label = null;
+			JLabel label = null;
+			
 			for(String key:variablesMap.keySet()) {
+				
 				variables = variablesMap.get(key);
 				for(String variable:variables) {
+					
 					variable = variable.replace("<", "").replace(">", "");
 					if(!fieldsMap.keySet().contains(variable)) {
-						label = new Label();
+						
+						label = new JLabel();
 						label.setText(variable + ": ");
-						if(fieldsMap.containsKey(variable)) {
-							fields = fieldsMap.get(variable);
-							fields.add(key);
-						} else {
-							fields = new HashSet<String>();
-							fields.add(key);
-							fieldsMap.put(variable, fields);
-						}
 						variablesPanel.add(label);
+												
 						text = new JTextField();
 						text.setText(variable);
-						((Component) text).setEnabled(false);
-						//textSSN.setBounds(40, 48, 134, 28);
+						text.setEnabled(false);
 						variablesPanel.add(text);
 						text.setColumns(10);
+						
+						label.setLabelFor(text);
+						
 						controlsMap.put(variable, text);
 						fields = new HashSet<String>();
 						fieldsMap.put(variable, fields);
@@ -133,14 +130,16 @@ public class DataExecutor {
 			
 			
 			Checkbox chkSQLFile = null;
-			//CheckboxGroup cbg = new CheckboxGroup();
 			for( String filename: filenames) {
+				
 				chkSQLFile = new Checkbox(filename);
 				checkboxesMap.put(filename, chkSQLFile);
-				//cbg.add(chkSQLFile);
+				
 				chkSQLFile.addItemListener(new ItemListener() {
-					public void itemStateChanged(ItemEvent e) {             
+					public void itemStateChanged(ItemEvent e) {   
+						
 						if(e.getStateChange()==1) {
+							
 							String filename = ((Checkbox) e.getSource()).getLabel();
 							Set<String> variables = variablesMap.get(filename);
 							for(String variable:variables) {
@@ -152,7 +151,7 @@ public class DataExecutor {
 									control.setEnabled(true);
 								}
 							}
-							//JOptionPane.showMessageDialog(null, filename, "InfoBox: ", JOptionPane.INFORMATION_MESSAGE);
+							
 						} else {
 							
 							String filename = ((Checkbox) e.getSource()).getLabel();
@@ -170,6 +169,7 @@ public class DataExecutor {
 							}
 								 
 						}
+						
 						variablesPanel.validate();
 						variablesPanel.repaint();
 					}
@@ -181,8 +181,7 @@ public class DataExecutor {
 			
 			frame.getContentPane().add(variablesPanel);
 		} catch (ServiceException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			JOptionPane.showMessageDialog(frame, "Exception : " + e1);
 		}
 		
 		
@@ -193,9 +192,11 @@ public class DataExecutor {
 		JButton btnExecute = new JButton("Execute");
 		btnExecute.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 				System.out.println("Execute Action");
 				Map<String,String> variables = new HashMap<String,String>();
 				List<String> sqlFileNameList = new ArrayList<String>();
+				
 				for(String filename:checkboxesMap.keySet()) {
 					Checkbox checkbox = checkboxesMap.get(filename);
 					if(checkbox.getState()) {
@@ -208,18 +209,21 @@ public class DataExecutor {
 					if(control instanceof JTextField) {
 						variables.put("<" + variable + ">", ((JTextField) control).getText());
 					}
-					
 				}
-				new Runner().dataExtractorRunner(sqlFileNameList, variables, "conn.txt");
+				
+				try {
+					frame.getContentPane().setEnabled(false);
+					runner.dataExtractorRunner(sqlFileNameList, variables, "conn.txt");
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(frame, "Exception : " + e1);
+				}
+				frame.getContentPane().setEnabled(true);
 			}
 		});
-		//btnExecute.setBounds(237, 408, 206, 29);
 		buttonsPanel.add(btnExecute);
 		
 		btnSetting = new JButton("Setting");
-		//btnSetting.setBounds(553, 408, 117, 29);
 		buttonsPanel.add(btnSetting);
 		frame.getContentPane().add(buttonsPanel);
-		
 	}
 }

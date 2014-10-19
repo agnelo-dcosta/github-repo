@@ -13,30 +13,17 @@ import org.aggi.sqldata.impl.PropertyConfigReader;
 
 public class Runner {
 
-	public void dataExtractorRunner(List<String> sqlFileNameList, Map<String,String> variables, String dbConfigFileName)
+	public void dataExtractorRunner(List<String> sqlFileNameList, Map<String,String> variables, String dbConfigFileName) throws Exception
 	{
-		
+		 
 	
 		System.out.println("Starting Data Reader");
-//		SQLFileParser fileParser = new SQLFileParser("mvas.txt");
-//		fileParser.printQuery();
-		
-		try {
 		
 			Properties prop = PropertyConfigReader.read();
 			String sqlFileBasePath = prop.getProperty(PropertyConfigReader.SQL_FILES_PATH);
 			String dbConnPath = prop.getProperty(PropertyConfigReader.DB_CONFIG_PATH);
 			String outPutFilePath = prop.getProperty(PropertyConfigReader.OUTPUT_PATH);
-		//TODO : Get from front end
-//		 sqlFileNameList = new ArrayList<String>();
-//		sqlFileNameList.add("mvas.sql");
-//		sqlFileNameList.add("stac.sql");
-		//TODO: Take variables from frontEnd
-//		 variables = new HashMap<String, String>();
-//		variables.put("<SSN>", "400400203");
-		//TODO: get dbCOnfidFIle name from frontEnd 
-//		 dbConfigFileName = "conn.txt";
-//		
+	
 		DatabaseConnectionParser dcp = new DatabaseConnectionParser(dbConnPath+dbConfigFileName);
 		
 		Map<String,Connection> connectionMap = dcp.createConnectionMap();
@@ -50,7 +37,7 @@ public class Runner {
 		
 			
 			dr.setUpReader(conn,sfp.getConnName(), variables , queryObjList);
-			dr.replaceVariables();
+			dr.replaceVariables(); 
 			
 			sfp.printQuery();
 			Map<String, ResultSet> resultSetMap = dr.executetQueryList();
@@ -65,10 +52,7 @@ public class Runner {
 			
 		}
 		
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 	}
 		
 	

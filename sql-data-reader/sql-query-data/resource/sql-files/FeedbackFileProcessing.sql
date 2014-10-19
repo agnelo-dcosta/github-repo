@@ -1,7 +1,9 @@
+--Connection MVAS
+
 --feedback tbljobqueue
 select * From tbljobqueue tj
 join  tblworkflowheaderproperty twh on twh.workflowid = tj.workflowid
-where twh.propertyvalue like '%<Feedback_file_name>%' order by createdate desc;
+where twh.propertyvalue like '%<FeedbackFileName>%' order by tj.createdate desc;
 
 
 
@@ -16,7 +18,7 @@ select max(C.LASTNAME) as LASTNAME, max(C.FIRSTNAME) as FIRSTNAME, max(CR.LAST_C
             join CLIENTXSMAPPING CX on CX.CLIENT_ID = CR.CLIENT_ID  
             join EMPLOYERXSMAPPING EX on EX.EMPLOYER_ID = CR.EMPLOYER_ID  
             join LOCATIONXSMAPPING LX on LX.LOCATION_ID = CR.LOCATION_ID 
-            join  tblworkflowheaderproperty twh on twh.propertyvalue like '%<Feedback_file_name>%'
+            join  tblworkflowheaderproperty twh on twh.propertyvalue like '%<FeedbackFileName>%'
             join tblworkflowheaderproperty twh_batchid on twh.workflowid = twh_batchid.workflowid and twh_batchid.element = 'BATCH_ID' 
     where  CR.REPORT_TYPE = 'CONTRI_SUSPENSION_RPT' and CR.BATCH_ID = twh_batchid.propertyvalue
       and c.username = '<SSN>'
@@ -33,7 +35,7 @@ select C.LASTNAME, C.FIRSTNAME, EA.ATTRIBUTE_VALUE, CR.PLAN_NUMBERS, CR.FIN_YEAR
             join CLIENTXSMAPPING CX on CX.CLIENT_ID = CR.CLIENT_ID  
             join EMPLOYERXSMAPPING EX on EX.EMPLOYER_ID = CR.EMPLOYER_ID  
             join LOCATIONXSMAPPING LX on LX.LOCATION_ID = CR.LOCATION_ID
-            join  tblworkflowheaderproperty twh on twh.propertyvalue like '%<Feedback_file_name>%'
+            join  tblworkflowheaderproperty twh on twh.propertyvalue like '%<FeedbackFileName>%'
             join tblworkflowheaderproperty twh_batchid on twh.workflowid = twh_batchid.workflowid and twh_batchid.element = 'BATCH_ID' 
       where  CR.REPORT_TYPE = 'CONTRI_ADJUSTMENT_RPT' and CR.BATCH_ID = twh_batchid.propertyvalue
       and c.username = '<SSN>'
@@ -53,15 +55,15 @@ select C.CUSTOMERID, C.LASTNAME, C.FIRSTNAME, EA.ATTRIBUTE_VALUE, CR.PLAN_NUMBER
    join EMPLOYERXSMAPPING EX on EX.EMPLOYER_ID = CR.EMPLOYER_ID  
    join LOCATIONXSMAPPING LX on LX.LOCATION_ID = CR.LOCATION_ID 
    left outer join LIMIT_FORECASTED_CONTRI LFC ON LFC.CLIENT_ID = CR.CLIENT_ID AND LFC.CUSTOMER_ID = CR.CUSTOMER_ID AND LFC.FIN_YEAR = CR.FIN_YEAR   
-   join  tblworkflowheaderproperty twh on twh.propertyvalue like '%<Feedback_file_name>%'
+   join  tblworkflowheaderproperty twh on twh.propertyvalue like '%<FeedbackFileName>%'
    join tblworkflowheaderproperty twh_batchid on twh.workflowid = twh_batchid.workflowid and twh_batchid.element = 'BATCH_ID' 
    where  CR.REPORT_TYPE = 'FORECAST_RPT_415' and CR.BATCH_ID = twh_batchid.propertyvalue and CR.EXCLUDE is null and c.username = '<SSN>'
-        order by max(C.LASTNAME), max(C.FIRSTNAME), EA.ATTRIBUTE_VALUE, EX.EMPLOYER_XSID, LX.LOCATION_XSID;
+       order by C.LASTNAME, C.FIRSTNAME, EX.EMPLOYER_XSID, LX.LOCATION_XSID;
 
 
 --Feedback batch_report
 select * from batch_report br 
-join  tblworkflowheaderproperty twh on twh.propertyvalue like '%<Feedback_file_name>%'
+join  tblworkflowheaderproperty twh on twh.propertyvalue like '%<FeedbackFileName>%'
 join tblworkflowheaderproperty twh_batchid on twh.workflowid = twh_batchid.workflowid and twh_batchid.element = 'BATCH_ID' 
 where batch_id =  twh_batchid.propertyvalue ;
 

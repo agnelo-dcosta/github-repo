@@ -84,7 +84,7 @@ public class DataExecutor {
 		}
 		String sqlFilespath = prop.getProperty(PropertyConfigReader.SQL_FILES_PATH);
 		
-		List<String> filenames = SQLFileEnumerator.listSQLFilesInFolder(sqlFilespath);
+		List<String> filenames = SQLFileEnumerator.listSQLFilesInFolder(sqlFilespath,".sql");
 		Panel sqlFilesPanel = new Panel();
 		sqlFilesPanel.setLayout(new GridLayout(filenames.size(),1));
 		
@@ -195,7 +195,7 @@ public class DataExecutor {
 		
 		//Dropdown for connections
 		String connFilePath = prop.getProperty(PropertyConfigReader.DB_CONFIG_PATH);
-		List<String> dbConfigFilenames = SQLFileEnumerator.listSQLFilesInFolder(connFilePath);
+		List<String> dbConfigFilenames = SQLFileEnumerator.listSQLFilesInFolder(connFilePath,".txt");
 		final JComboBox connList = new JComboBox(dbConfigFilenames.toArray());
 		
 		buttonsPanel.add(connList);

@@ -12,19 +12,22 @@ import java.util.regex.Pattern;
 
 public class SQLFileEnumerator {
 
-	public static List<String> listSQLFilesInFolder(final String sqlFilespath) {
+	public static List<String> listSQLFilesInFolder(final String sqlFilespath, final String fileType) {
 		final File folder = new File(sqlFilespath);
-		return listSQLFilesInFolder(folder);
+		return listSQLFilesInFolder(folder, fileType);
 	}
 	
-	public static List<String> listSQLFilesInFolder(final File folder) {
+	public static List<String> listSQLFilesInFolder(final File folder, final String fileType) {
 		List<String> sqlFiles = new ArrayList<String>();
 		
 	    for (final File fileEntry : folder.listFiles()) {
 	    	if (fileEntry.isDirectory()) {
 	    		//listSQLFilesInFolder(fileEntry);
 	        } else {
-	            sqlFiles.add(fileEntry.getName());
+	        	if(fileEntry.getName().contains(fileType))
+	        		{ 
+	        			sqlFiles.add(fileEntry.getName());
+	        		}
 	        }
 	    }
 	    return sqlFiles;
